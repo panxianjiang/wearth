@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<title></title>
+		<script src="js/angular.min.js" type="text/javascript" charset="utf-8"></script>
+		
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<script type="text/javascript" src="js/jquery-1.11.2.js"></script>
+		<script type="text/javascript" src="js/collapse.js"></script>
+		<script type="text/javascript" src="js/transition.js"></script>
+		<script type="text/javascript" src="js/dropdown.js"></script>
+		<link rel="stylesheet" type="text/css" href="font_440967_annwe23uzorms4i/iconfont.css">
+
+	</head>
+	<body >
+		<!--key:c8b18212397748599a7fb0bfa1022b56-->
+         <div ng-app="app" ng-controller="weather">
+         	<div id="main" class="container">
+         		<div class="row">
+         			<div class="col-md-12">
+					
+					<div id="topSearch"  class="form-group ">
+						<input type="text" ng-model="city" ng-keyup='search2($event)'  class="form-control" />
+					</div>
+					 <div class="form-group">
+					    <button ng-click='search($event)' class="btn btn-info btn-block">查询</button>
+					 </div>
+						
+					<div class="result" ng-show="isResult">
+					    
+					    <div class="bg-danger ">
+						{{time+nowtime}}
+					   </div>
+
+						<div class="quality">{{"天气质量:"+quality}}</div>
+						<div id="">
+							<span class="iconfont" ng-class="icon"></span>
+							<img ng-src='{{st}}' />
+						</div>
+						<div class="天气">{{"天气情况："+style}}</div>
+						<div class="nowTmp">
+							{{"现在的气温："+nowTmp}}
+						</div>
+						<div class="tmp">
+							{{tmpMin+"~"+tmpMax+"℃"}}
+						</div>
+						<div class="wind">
+							{{wind}}
+						</div>
+					</div>
+ 			</div>
+		</div>
+	</div>
+</div>  		
+ 
+
+		<script type="text/javascript">
+			// 现在的时间：
+			var nowtim=new Date();
+			var now=nowtim.toLocaleTimeString();
+
+			var app = angular.module("app",[]);
+			app.controller("weather",function($scope,$http){
+				// $scope.city = ""
+				$scope.nowtime=now;
+
+				// ng-bind:src="'img/'+st+'.png'"  实现图片转换：
+				// $scope.$watch;
+                $scope.search2=function($event){
+                        if ($event.keyCode==13) {
+                        	weather();
+                        	console.log('sad');
+                        }
+                }
+				 
+                 $scope.search=function($event){ 
+                        	weather();    
+                }
+
+				function weather($event){
+					
+						
+					$http.get("https://free-api.heweather.com/v5/weather?city="+$scope.city+"&key=c8b18212397748599a7fb0bfa1022b56").then(function(result){
+						console.log(result);
+						var weather = result.data.HeWeather5[0]
+						if(result.data&&weather.status!=="unknown city"){
+
+							$scope.isResult = true;
+							$scope.time = weather.daily_forecast[0].date;
+							$scope.quality = weather.aqi.city.qlty;
+							$scope.nowTmp = weather.now.tmp;
+							$scope.tmpMin = weather.daily_forecast[0].tmp.min;
+							$scope.tmpMax = weather.daily_forecast[0].tmp.max;
+							$scope.wind = weather.daily_forecast[0].wind.dir+":"+weather.daily_forecast[0].wind.sc;	
+
+							$scope.style =  weather.now.cond.txt;	
+
+
+							switch(weather.now.cond.txt){
+								case"晴":
+								$scope.icon="icon-leidian";
+								$scope.st="img/dd.jpg";
+								break;
+								
+								case"多云":
+								$scope.icon="icon-tianqi";
+								$scope.st="img/多云.png";
+								break;
+
+								default:
+								$scope.icon="icon-tianqiqing";
+								$scope.st="img/阴天.png";
+							}
+
+						}else{
+							alert("请输入正确的城市名字");
+						}
+						
+					})
+				}	
+				
+			})
+        </script>			
+			
+			
+			<!-- //$http，angular框架封装的ajax方法，get的方法里的参数是获取的服务器地址，then()的参数是一个回调函数，执行当有数据返回时候的执行的函数；
+			/*	$http.get("https://free-api.heweather.com/v5/weather?city=guangzhou&key=c8b18212397748599a7fb0bfa1022b56").then(function(result){
+					console.log(result);
+				})*/ -->
+		
+	</body>
+</html>
