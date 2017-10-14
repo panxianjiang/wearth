@@ -32,7 +32,7 @@
 					<div class="result" ng-show="isResult">
 					    
 					    <div class="bg-danger ">
-						{{time+nowtime}}
+						{{time}}<span id="ti"></span>
 					   </div>
 
 						<div class="quality">{{"天气质量:"+quality}}</div>
@@ -59,14 +59,21 @@
 
 		<script type="text/javascript">
 			// 现在的时间：
+			var myVar=setInterval(function(){
+		
 			var nowtim=new Date();
+               
 			var now=nowtim.toLocaleTimeString();
-
+                document.querySelector("#ti").innerHTML=now;
+		},1000);
+                  
 			var app = angular.module("app",[]);
-			app.controller("weather",function($scope,$http){
-				// $scope.city = ""
-				$scope.nowtime=now;
+			app.controller("weather",function ($scope,$http){
 
+				// $scope.city = ""
+
+				
+   
 				// ng-bind:src="'img/'+st+'.png'"  实现图片转换：
 				// $scope.$watch;
                 $scope.search2=function($event){
@@ -102,7 +109,7 @@
 							switch(weather.now.cond.txt){
 								case"晴":
 								$scope.icon="icon-leidian";
-								$scope.st="img/dd.jpg";
+								$scope.st="img/晴.png";
 								break;
 								
 								case"多云":
@@ -123,6 +130,7 @@
 				}	
 				
 			})
+
         </script>			
 			
 			
